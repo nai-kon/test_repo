@@ -20,7 +20,7 @@ jobs:
       matrix:
         python-ver: [3.11]
         os: [ubuntu-latest]  
-          zip_name: hoge.txt
+        zip_name: hoge.txt
 
     runs-on: ${{ matrix.os }}
     steps:
