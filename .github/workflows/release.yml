@@ -33,7 +33,7 @@ jobs:
         python-version: ${{ matrix.python-ver }}
         
     - name: dummy files
-      run: touch hoge.txt
+      run: echo "this is dummy file haha" > hoge.txt
 
     - uses: actions/upload-artifact@v4
       with:
