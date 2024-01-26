@@ -1,0 +1,62 @@
+name: release
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  # test:
+  #   uses: ./.github/workflows/pytest.yml
+
+  build:
+    # needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        python-ver: [3.11]
+        os: [ubuntu-latest]  
+          zip_name: hoge.txt
+
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Set up Python ${{ matrix.python-ver }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-ver }}
+        
+    - name: dummy files
+      run: touch hoge.txt
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.zip_name }}
+        path: ${{ matrix.zip_name }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: write
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: assets
+
+    - name: Display structure of downloaded files
+      run: ls -la
+
+    - name: create release
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: true
+        files: ./assets/*/*
